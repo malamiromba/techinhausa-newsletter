@@ -1,0 +1,20 @@
+{
+  "name": "techinhausa-newsletter",
+  "version": "1.0.0",
+  "description": "TechInHausa Newsletter — Editorial publication powered by Substack",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "techinhausa",
+    "newsletter",
+    "ai",
+    "hausa",
+    "editorial",
+    "substack"
+  ],
+  "author": "TechInHausa / Malamiromba Ltd",
+  "license": "MIT"
+}
