@@ -225,21 +225,14 @@
         </div>
       </div>
 
-      <!-- Active Filter Banner & Substack Backend Sync Indicator -->
-      <div class="flex items-center justify-between mb-6">
-        <div id="filter-banner" class="hidden py-1.5 px-3 bg-[#fef8ee] border border-[#d4a03b]/30 rounded-md items-center gap-2 text-xs">
-          <span class="text-[#233a69]">
-            Category: <strong id="filter-name" class="text-[#162646] font-semibold"></strong>
-          </span>
-          <button onclick="setCategory('all')" class="text-[#d4a03b] font-medium hover:underline ml-1">
-            ✕ Clear
-          </button>
-        </div>
-
-        <div id="sync-status" class="text-[11px] text-slate-400 font-medium ml-auto flex items-center gap-1.5">
-          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-          <span>Feed Synchronized</span>
-        </div>
+      <!-- Active Filter Banner -->
+      <div id="filter-banner" class="hidden mb-6 py-2 px-3 bg-[#fef8ee] border border-[#d4a03b]/30 rounded-md items-center justify-between text-xs">
+        <span class="text-[#233a69]">
+          Category: <strong id="filter-name" class="text-[#162646] font-semibold"></strong>
+        </span>
+        <button onclick="setCategory('all')" class="text-[#d4a03b] font-medium hover:underline">
+          Show all posts ✕
+        </button>
       </div>
 
       <!-- Feed Stream Container (Dynamic Posts with Complete Read Handlers) -->
@@ -703,7 +696,6 @@
             <time>${art.date}</time>
             <span>•</span>
             <span>${art.readTime}</span>
-            ${art.isLatest ? '<span class="ml-auto text-[11px] font-medium text-[#162646] bg-[#fef8ee] px-2 py-0.5 rounded border border-[#d4a03b]/40">Latest Issue</span>' : ''}
           </div>
 
           <h2 class="serif-headline text-2xl sm:text-3xl font-medium text-[#162646] group-hover:text-[#233a69] transition-colors mb-2 leading-snug cursor-pointer">
@@ -938,12 +930,9 @@
     // 1) Tries Vercel /api/archive (supports unlimited back-dated posts via Load More).
     // 2) Falls back to Substack RSS via rss2json (for local file:// previews).
     async function initSubstackFeed() {
-      const syncStatus = document.getElementById('sync-status');
-
       const archiveBatch = await fetchArchiveBatch(0, ARCHIVE_BATCH);
       if (archiveBatch && archiveBatch.length > 0) {
         liveArchiveActive = true;
-        syncStatus.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500"></span><span>Live · Substack Archive</span>`;
         renderFeed(currentCategory);
         return;
       }
@@ -984,7 +973,6 @@
                   date: formatDisplayDate(item.pubDate),
                   readTime: estimateReadTime(0, plainText),
                   author: item.author || 'Ibrahim Malamiromba',
-                  isLatest: index === 0,
                   source: 'live',
                   excerpt: excerpt,
                   content: fullHtml
@@ -992,7 +980,6 @@
               });
 
               articles = livePosts;
-              syncStatus.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500"></span><span>Live · ${livePosts.length} Issues Synced</span>`;
               renderFeed(currentCategory);
               return;
             }
@@ -1001,9 +988,6 @@
           // Try next endpoint or fall back cleanly below
         }
       }
-
-      // Graceful fallback when offline or sandboxed
-      syncStatus.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500"></span><span>Ready · Preview Mode</span>';
     }
 
     function handleSubstackSubscribe(e, feedbackId = 'sub-feedback') {
