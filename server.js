@@ -4,7 +4,7 @@ const path = require('path');
 const https = require('https');
 
 const PORT = process.env.PORT || 3000;
-const SUBSTACK_FEED_URL = 'https://newsletter.techinhausa.org/feed';
+const SUBSTACK_FEED_URL = 'https://techinhausa.substack.com/feed';
 
 const MIME_TYPES = {
   '.html': 'text/html',

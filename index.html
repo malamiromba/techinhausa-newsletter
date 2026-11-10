@@ -37,7 +37,7 @@
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
-    .article-content h3 {
+    .article-content h1, .article-content h2, .article-content h3 {
       font-size: 1.25rem;
       font-weight: 700;
       color: #162646;
@@ -48,6 +48,35 @@
       margin-bottom: 1.25rem;
       line-height: 1.75;
       color: #334155;
+    }
+    .article-content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 0.75rem;
+      margin: 1.5rem auto;
+      border: 1px solid #e2e8f0;
+    }
+    .article-content figure {
+      margin: 1.5rem 0;
+    }
+    .article-content figcaption {
+      font-size: 0.75rem;
+      color: #64748b;
+      text-align: center;
+      margin-top: 0.5rem;
+    }
+    .article-content a {
+      color: #233a69;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      font-weight: 500;
+    }
+    .article-content a:hover {
+      color: #d4a03b;
+    }
+    .article-content hr {
+      border-color: #e2e8f0;
+      margin: 2rem 0;
     }
     .article-content blockquote {
       border-left: 4px solid #d4a03b;
@@ -326,7 +355,7 @@
       <p class="text-slate-600 text-xs sm:text-sm leading-relaxed mb-6">
         Get weekly bilingual AI updates, practical guides, and digital skills delivered directly to your inbox — 100% free.
       </p>
-      <form onsubmit="handleSubstackSubscribe(event)" class="flex gap-2 max-w-sm mx-auto">
+      <form onsubmit="handleSubstackSubscribe(event, 'reader-sub-feedback')" class="flex gap-2 max-w-sm mx-auto">
         <input 
           type="email" 
           required 
@@ -339,6 +368,7 @@
           Subscribe
         </button>
       </form>
+      <p id="reader-sub-feedback" class="text-xs text-emerald-700 mt-3 font-medium hidden"></p>
     </div>
 
     <!-- Bottom Back to Top Navigation -->
@@ -745,67 +775,92 @@
     }
 
     // SUBSTACK LIVE BACKEND INGESTION
-    // Fetches live posts from Substack RSS/API when deployed on domain or through proxy
+    // Queries techinhausa.substack.com/feed (permanent Substack home) so live posts continue
+    // syncing automatically even after newsletter.techinhausa.org points to Vercel.
     async function initSubstackFeed() {
       const syncStatus = document.getElementById('sync-status');
-      try {
-        // Substack feed endpoints
-        const feedUrl = 'https://newsletter.techinhausa.org/feed';
-        const proxyUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}`;
-        
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 3500);
+      const feedUrls = [
+        'https://techinhausa.substack.com/feed',
+        'https://newsletter.techinhausa.org/feed'
+      ];
 
-        const res = await fetch(proxyUrl, { signal: controller.signal });
-        clearTimeout(timeoutId);
+      for (const feedUrl of feedUrls) {
+        try {
+          const proxyUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}`;
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 5000);
 
-        if (res.ok) {
-          const data = await res.json();
-          if (data && data.items && data.items.length > 0) {
-            const livePosts = data.items.map((item, index) => {
-              const cat = classifyPost(item.title, item.description, item.categories || []);
-              const dateStr = new Date(item.pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-              
-              // Strip HTML for clean excerpt
-              const div = document.createElement('div');
-              div.innerHTML = item.description || '';
-              const plainText = div.textContent || div.innerText || '';
-              const excerpt = plainText.slice(0, 190) + '...';
+          const res = await fetch(proxyUrl, { signal: controller.signal });
+          clearTimeout(timeoutId);
 
-              return {
-                id: 100 + index,
-                title: item.title,
-                category: cat,
-                date: dateStr,
-                readTime: '4 min read',
-                author: item.author || 'Ibrahim Malamiromba',
-                isLatest: index === 0,
-                source: 'live',
-                excerpt: excerpt,
-                content: item.content || item.description
-              };
-            });
+          if (res.ok) {
+            const data = await res.json();
+            if (data && data.items && data.items.length > 0) {
+              const livePosts = data.items.map((item, index) => {
+                const fullHtml = (item.content && item.content.length > (item.description || '').length)
+                  ? item.content
+                  : (item.description || '');
 
-            // Prepend live posts
-            articles = [...livePosts, ...articles.filter(a => a.source === 'curated')];
-            syncStatus.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500"></span><span>Substack Connected</span>';
-            renderFeed(currentCategory);
+                // Strip HTML for clean excerpt and reading time calculation
+                const div = document.createElement('div');
+                div.innerHTML = fullHtml;
+                const plainText = (div.textContent || div.innerText || '').replace(/\s+/g, ' ').trim();
+                const wordCount = plainText ? plainText.split(/\s+/).length : 250;
+                const readMinutes = Math.max(1, Math.round(wordCount / 200));
+                const excerpt = plainText.length > 190 ? plainText.slice(0, 190) + '...' : plainText;
+
+                const cat = classifyPost(item.title, plainText, item.categories || []);
+                const dateObj = new Date(item.pubDate);
+                const dateStr = isNaN(dateObj.getTime())
+                  ? item.pubDate
+                  : dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+                return {
+                  id: 100 + index,
+                  title: item.title,
+                  category: cat,
+                  date: dateStr,
+                  readTime: `${readMinutes} min read`,
+                  author: item.author || 'Ibrahim Malamiromba',
+                  isLatest: index === 0,
+                  source: 'live',
+                  excerpt: excerpt,
+                  content: fullHtml
+                };
+              });
+
+              // Replace dummy showcase posts with real live Substack posts
+              articles = livePosts;
+              syncStatus.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500"></span><span>Live · ${livePosts.length} Issues Synced</span>`;
+              renderFeed(currentCategory);
+              return;
+            }
           }
+        } catch (err) {
+          // Try next endpoint or fall back cleanly below
         }
-      } catch (err) {
-        // Fallback gracefully to curated posts (offline or sandboxed)
-        syncStatus.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500"></span><span>Ready · 5 Issues</span>';
       }
+
+      // Graceful fallback when offline or sandboxed
+      syncStatus.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-500"></span><span>Ready · Preview Mode</span>';
     }
 
-    function handleSubstackSubscribe(e) {
+    function handleSubstackSubscribe(e, feedbackId = 'sub-feedback') {
       e.preventDefault();
-      const feedback = document.getElementById('sub-feedback');
-      feedback.classList.remove('hidden');
-      feedback.innerText = "✓ Connecting to Substack publication queue...";
-      setTimeout(() => {
-        feedback.innerText = "✓ Substack connection active. You'll receive the next edition directly!";
-      }, 600);
+      const form = e.target;
+      const emailInput = form.querySelector('input[type="email"]');
+      const email = emailInput ? emailInput.value.trim() : '';
+      const feedback = document.getElementById(feedbackId) || document.getElementById('sub-feedback');
+
+      if (feedback) {
+        feedback.classList.remove('hidden');
+        feedback.innerText = "✓ Opening Substack to complete your free subscription...";
+      }
+
+      if (email) {
+        const subUrl = `https://techinhausa.substack.com/subscribe?email=${encodeURIComponent(email)}`;
+        window.open(subUrl, '_blank', 'noopener,noreferrer');
+      }
     }
 
     function openDictionaryModal() {
