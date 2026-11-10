@@ -19,24 +19,24 @@ An elegant, editorial publication website designed for **TechInHausa**, built to
 ## Core Features
 
 1. **Substack Backend Connection:**
-   - Client-side and server-side automated ingestion from Substack RSS (`https://newsletter.techinhausa.org/feed`).
+   - Client-side and server-side automated ingestion from Substack RSS (`https://techinhausa.substack.com/feed` with fallback to `https://newsletter.techinhausa.org/feed`).
    - Automatic classification of incoming posts into the 5 core categories (`Non-technical`, `AI update`, `Practical guide`, `Stories`, `Ads`).
-   - Seamless fallback to curated bilingual articles if offline or sandboxed.
+   - Replaces placeholder showcase posts with live Substack articles once connected.
 2. **Editorial Hero & Key Metrics:**
-   - Official centered TechInHausa emblem logo.
+   - Clean, minimalist hero aligned to the `max-w-3xl` editorial column.
    - Exact audience metrics strip:
      - **500K+ Audience**
      - **70K+ Community**
      - **100% Free**
      - **1K App Downloads**
-   - Substack email subscription form.
-3. **TechInHausa Impact Banner:**
+   - Direct Substack email subscription form.
+3. **TechInHausa Impact Banner (Bottom Section):**
    - Soft blue framing lines (`#B9CBE2`) above and below.
    - Yellow button: `TechInHausa Impact ↗` linking to `https://techinhausa.org/`.
    - Editorial serif text: `Learn about our work in the community.` with interactive golden hover effect.
-4. **Hausa Dictionary Feature:**
-   - Header button: `Hausa Dictionary` with `Soon` badge.
-   - Opens an interactive modal describing the upcoming bilingual Hausa tech dictionary.
+4. **TechInHausa LLM Feature:**
+   - Header button: `TechInHausa LLM` with `Soon` badge.
+   - Opens an interactive "Coming Soon" modal introducing the Hausa AI language model with a **"Notify me at launch"** action.
 5. **Full In-Site Reader View ("alls hondle read"):**
    - Clicking post titles, post excerpts, or "Read full email →" opens the full article reader view `#reader-view`.
    - Formatted bilingual article content with subheadings, quotes, and action items.

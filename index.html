@@ -124,11 +124,11 @@
 
       <!-- Header Actions -->
       <div class="flex items-center gap-3">
-        <!-- Hausa Dictionary Button with Coming Soon Modal -->
+        <!-- TechInHausa LLM Button with Coming Soon Modal -->
         <button 
-          onclick="openDictionaryModal()" 
+          onclick="openLlmModal()" 
           class="inline-flex items-center gap-1.5 text-xs font-semibold text-[#233a69] bg-[#fef8ee] hover:bg-[#fdeece] px-3.5 py-1.5 rounded-full transition-colors border border-[#d4a03b]/40">
-          <span>Hausa Dictionary</span>
+          <span>TechInHausa LLM</span>
           <span class="text-[10px] bg-[#d4a03b]/20 text-[#b58325] px-1.5 py-0.2 rounded font-bold">Soon</span>
         </button>
 
@@ -419,25 +419,34 @@
     </div>
   </aside>
 
-  <!-- HAUSA DICTIONARY COMING SOON MODAL -->
-  <div id="dict-modal" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs hidden items-center justify-center p-4">
-    <div class="bg-white rounded-2xl border border-slate-200 p-6 max-w-sm w-full shadow-2xl relative text-center">
-      <div class="w-12 h-12 rounded-xl bg-[#fef8ee] border border-[#d4a03b]/40 flex items-center justify-center mx-auto mb-4 text-2xl">
-        📖
+  <!-- TECHINHAUSA LLM COMING SOON MODAL -->
+  <div id="llm-modal" class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl border border-slate-200 p-6 sm:p-7 max-w-sm w-full shadow-2xl relative text-center">
+      <button 
+        onclick="closeLlmModal()" 
+        aria-label="Close modal"
+        class="absolute top-3.5 right-3.5 text-slate-400 hover:text-slate-600 p-1 rounded-md transition-colors">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+
+      <div class="w-12 h-12 rounded-xl bg-[#fef8ee] border border-[#d4a03b]/40 flex items-center justify-center mx-auto mb-4 text-[#233a69]">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z"/>
+        </svg>
       </div>
       <h3 class="serif-headline text-2xl font-normal text-[#162646] mb-2">
-        Hausa Dictionary
+        TechInHausa LLM
       </h3>
       <span class="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#fef8ee] text-[#d4a03b] border border-[#d4a03b]/30 mb-3">
         Coming Soon
       </span>
       <p class="text-slate-600 text-xs sm:text-sm leading-relaxed mb-6">
-        We are building the first comprehensive bilingual tech & AI dictionary in the Hausa language to standardize digital terminology across Africa.
+        We’re building an AI language model for Hausa. Ask questions in Hausa and get explanations of tech and AI terms in plain language.
       </p>
       <button 
-        onclick="closeDictionaryModal()" 
-        class="w-full bg-[#233a69] hover:bg-[#162646] text-white font-medium py-2 rounded-lg text-xs transition-colors">
-        Got it, notify me!
+        onclick="notifyAtLlmLaunch()" 
+        class="w-full bg-[#233a69] hover:bg-[#162646] text-white font-medium py-2.5 rounded-lg text-xs transition-colors">
+        Notify me at launch
       </button>
     </div>
   </div>
@@ -834,30 +843,51 @@
       }
     }
 
-    function openDictionaryModal() {
-      const modal = document.getElementById('dict-modal');
+    function openLlmModal() {
+      const modal = document.getElementById('llm-modal');
       modal.classList.remove('hidden');
       modal.classList.add('flex');
     }
 
-    function closeDictionaryModal() {
-      const modal = document.getElementById('dict-modal');
+    function closeLlmModal() {
+      const modal = document.getElementById('llm-modal');
       modal.classList.add('hidden');
       modal.classList.remove('flex');
     }
 
+    function notifyAtLlmLaunch() {
+      closeLlmModal();
+      if (!document.getElementById('reader-view').classList.contains('hidden')) {
+        closeArticle();
+      }
+      const subscribeBox = document.getElementById('subscribe');
+      const emailInput = document.getElementById('hero-email');
+      const feedback = document.getElementById('sub-feedback');
+      if (feedback) {
+        feedback.classList.remove('hidden');
+        feedback.className = 'text-xs text-[#233a69] mt-2 font-medium';
+        feedback.innerText = "✓ Enter your email above to be notified when TechInHausa LLM launches.";
+      }
+      if (subscribeBox) {
+        subscribeBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      if (emailInput) {
+        setTimeout(() => emailInput.focus(), 350);
+      }
+    }
+
     // Close modal on click outside
     window.onclick = function(event) {
-      const modal = document.getElementById('dict-modal');
+      const modal = document.getElementById('llm-modal');
       if (event.target === modal) {
-        closeDictionaryModal();
+        closeLlmModal();
       }
     };
 
     // Keyboard support: ESC closes reader or modal
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
-        closeDictionaryModal();
+        closeLlmModal();
         if (!document.getElementById('reader-view').classList.contains('hidden')) {
           closeArticle();
         }
