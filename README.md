@@ -30,8 +30,8 @@ An elegant, editorial publication website designed for **TechInHausa**, built to
      - **100% Free**
      - **1K App Downloads**
    - Direct Substack email subscription form.
-3. **TechInHausa Impact Banner (Bottom Section):**
-   - Soft blue framing lines (`#B9CBE2`) above and below.
+3. **TechInHausa Impact Row (Footer Section):**
+   - Integrated cleanly inside the editorial footer directly below the publication caption (no extra enclosing lines).
    - Yellow button: `TechInHausa Impact ↗` linking to `https://techinhausa.org/`.
    - Editorial serif text: `Learn about our work in the community.` with interactive golden hover effect.
 4. **TechInHausa LLM Feature:**
