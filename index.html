@@ -464,20 +464,38 @@
       'ads': 'Ads'
     };
 
-    // Automatic Category Classifier for live Substack incoming posts
+    // Automatic Category Classifier:
+    // Priority 1: Explicit Substack Post Tags or Section Names
+    // Priority 2: Word-boundary keyword inference for untagged posts
+    const tagCategoryMap = [
+      { category: 'non-technical', match: /^(non[-\s]?technical|beginner|basics|glossary|intro)$/i },
+      { category: 'ai-update', match: /^(ai[-\s]?updates?|ai[-\s]?news|ai)$/i },
+      { category: 'practical-guide', match: /^(practical[-\s]?guides?|guides?|tutorials?|how[-\s]?to)$/i },
+      { category: 'stories', match: /^(stories|story|ecosystem|community|interviews?)$/i },
+      { category: 'ads', match: /^(ads?|sponsored|sponsor|partner|promo|promotion)$/i }
+    ];
+
     function classifyPost(title = '', excerpt = '', tags = []) {
-      const text = (title + ' ' + excerpt + ' ' + tags.join(' ')).toLowerCase();
-      
-      if (text.includes('ad') || text.includes('sponsor') || text.includes('partner') || text.includes('offer') || text.includes('discount') || text.includes('talla')) {
+      // 1. Check explicit Substack Tags / Sections first
+      for (const rawTag of tags) {
+        const tag = String(rawTag || '').trim();
+        for (const rule of tagCategoryMap) {
+          if (rule.match.test(tag)) return rule.category;
+        }
+      }
+
+      // 2. Auto-classify untagged posts via safe word-boundary patterns
+      const text = `${title} ${excerpt}`.toLowerCase();
+      if (/\b(ads?|sponsored|sponsorship|discount code|promo code|promotion|talla)\b/.test(text)) {
         return 'ads';
       }
-      if (text.includes('guide') || text.includes('how to') || text.includes('yadda') || text.includes('mataki') || text.includes('tutorial') || text.includes('step') || text.includes('code') || text.includes('setup')) {
+      if (/\b(guide|how to|tutorial|step-by-step|yadda|mataki|workflow|setup|build a)\b/.test(text)) {
         return 'practical-guide';
       }
-      if (text.includes('story') || text.includes('stories') || text.includes('labari') || text.includes('tarihi') || text.includes('career') || text.includes('journey') || text.includes('ecosystem') || text.includes('interview')) {
+      if (/\b(story|stories|labari|tarihi|career|journey|ecosystem|interview|founder)\b/.test(text)) {
         return 'stories';
       }
-      if (text.includes('claude') || text.includes('gemini') || text.includes('gpt') || text.includes('llm') || text.includes('model') || text.includes('artificial intelligence') || text.includes('ai update') || text.includes('reasoning')) {
+      if (/\b(ai|claude|gemini|gpt|openai|anthropic|llm|reasoning model|artificial intelligence|machine learning)\b/.test(text)) {
         return 'ai-update';
       }
       return 'non-technical';

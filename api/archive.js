@@ -21,9 +21,13 @@ module.exports = async (req, res) => {
 
     const posts = rawPosts.map((item) => {
       const byline = Array.isArray(item.publishedBylines) && item.publishedBylines[0];
-      const tags = Array.isArray(item.postTags)
-        ? item.postTags.map((t) => (typeof t === 'string' ? t : t.name || t.slug)).filter(Boolean)
-        : [];
+      const tags = [
+        ...(Array.isArray(item.postTags)
+          ? item.postTags.map((t) => (typeof t === 'string' ? t : t.name || t.slug))
+          : []),
+        item.section_name,
+        item.section_slug
+      ].filter(Boolean);
 
       const excerptSource = item.truncated_body_text || item.subtitle || '';
       return {
