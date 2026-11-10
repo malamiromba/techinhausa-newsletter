@@ -38,7 +38,7 @@ An elegant, editorial publication website designed for **TechInHausa**, built to
    - Header button: `TechInHausa LLM` with `Soon` badge.
    - Opens an interactive "Coming Soon" modal introducing the Hausa AI language model with a **"Notify me at launch"** action.
 5. **Full In-Site Reader View ("alls hondle read"):**
-   - Clicking post titles, post excerpts, or "Read →" opens the full article reader view `#reader-view`.
+   - Clicking post titles, post excerpts, or "Read" opens the full article reader view `#reader-view`.
    - Formatted bilingual article content with subheadings, quotes, and action items.
    - Direct "Share on WhatsApp" button with custom pre-filled message.
    - Substack email capture box at the bottom of every article.
