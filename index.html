@@ -245,12 +245,29 @@
       <!-- Feed Stream Container (Dynamic Posts with Complete Read Handlers) -->
       <div class="space-y-10" id="post-feed"></div>
 
-      <!-- Empty State -->
-      <div id="empty-state" class="hidden text-center py-16">
-        <p class="text-sm text-slate-500 mb-3">No emails found in this category yet.</p>
-        <button onclick="setCategory('all')" class="text-xs font-semibold text-[#233a69] hover:underline">
-          Back to all emails
+      <!-- Pagination / Load More Older Posts -->
+      <div id="load-more-wrap" class="hidden pt-10 text-center">
+        <button 
+          id="load-more-btn"
+          type="button" 
+          onclick="loadMorePosts()" 
+          class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg border border-slate-300 hover:border-[#233a69] text-xs sm:text-sm font-semibold text-[#233a69] bg-white hover:bg-slate-50 transition-all shadow-xs disabled:opacity-60 disabled:cursor-not-allowed">
+          Load more
         </button>
+        <p id="load-more-count" class="text-[11px] text-slate-400 mt-2.5 font-medium"></p>
+      </div>
+
+      <!-- Empty State -->
+      <div id="empty-state" class="hidden text-center py-14">
+        <p class="text-sm text-slate-500 mb-3">No posts found in this category within loaded issues.</p>
+        <div class="flex items-center justify-center gap-4">
+          <button id="empty-load-more-btn" onclick="loadMorePosts()" class="hidden text-xs font-semibold text-[#d4a03b] hover:underline">
+            Check older issues
+          </button>
+          <button onclick="setCategory('all')" class="text-xs font-semibold text-[#233a69] hover:underline">
+            Back to all emails
+          </button>
+        </div>
       </div>
 
     </main>
@@ -635,20 +652,41 @@
       }
     ];
 
-    // Current active category filter
-    let currentCategory = 'all';
+    // Pagination & Archive State
+    const INITIAL_LIMIT = 4;
+    const LOAD_STEP = 6;
+    const ARCHIVE_BATCH = 10;
 
-    // RENDER FEED FUNCTION
+    let currentCategory = 'all';
+    let visibleLimit = INITIAL_LIMIT;
+    let archiveOffset = 0;
+    let hasMoreOnServer = false;
+    let isFetchingMore = false;
+    let liveArchiveActive = false;
+    let currentOpenArticleId = null;
+
+    function formatDisplayDate(rawDate) {
+      const d = new Date(rawDate);
+      return isNaN(d.getTime())
+        ? (rawDate || '')
+        : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    function estimateReadTime(wordCount, text = '') {
+      const words = wordCount || (text ? text.trim().split(/\s+/).length : 250);
+      return `${Math.max(1, Math.round(words / 200))} min read`;
+    }
+
+    // RENDER FEED FUNCTION (Supports pagination + Load More for older issues)
     function renderFeed(filterCat = 'all') {
       currentCategory = filterCat;
       const container = document.getElementById('post-feed');
       container.innerHTML = '';
-      let visibleCount = 0;
 
-      articles.forEach(art => {
-        if (filterCat !== 'all' && art.category !== filterCat) return;
-        visibleCount++;
+      const matching = articles.filter(art => filterCat === 'all' || art.category === filterCat);
+      const visibleItems = matching.slice(0, visibleLimit);
 
+      visibleItems.forEach(art => {
         const articleEl = document.createElement('article');
         articleEl.className = 'feed-item group border-b border-slate-100 pb-10 transition-opacity';
         articleEl.setAttribute('data-category', art.category);
@@ -669,10 +707,10 @@
           </div>
 
           <h2 class="serif-headline text-2xl sm:text-3xl font-medium text-[#162646] group-hover:text-[#233a69] transition-colors mb-2 leading-snug cursor-pointer">
-            <a href="javascript:void(0)" onclick="openArticle(${art.id})">${art.title}</a>
+            <a href="javascript:void(0)" onclick="openArticle('${art.id}')">${art.title}</a>
           </h2>
 
-          <p class="text-slate-600 text-sm sm:text-base leading-relaxed mb-4 cursor-pointer" onclick="openArticle(${art.id})">
+          <p class="text-slate-600 text-sm sm:text-base leading-relaxed mb-4 cursor-pointer" onclick="openArticle('${art.id}')">
             ${art.excerpt}
           </p>
 
@@ -680,7 +718,7 @@
             <span>By <strong>${art.author}</strong> · TechInHausa</span>
             <button 
               type="button"
-              onclick="openArticle(${art.id})" 
+              onclick="openArticle('${art.id}')" 
               class="font-semibold text-[#233a69] hover:text-[#d4a03b] hover:underline transition-colors">
               Read
             </button>
@@ -690,17 +728,74 @@
       });
 
       const empty = document.getElementById('empty-state');
-      if (visibleCount === 0) {
+      const emptyLoadMoreBtn = document.getElementById('empty-load-more-btn');
+      if (visibleItems.length === 0) {
         empty.classList.remove('hidden');
+        if (hasMoreOnServer) {
+          emptyLoadMoreBtn.classList.remove('hidden');
+        } else {
+          emptyLoadMoreBtn.classList.add('hidden');
+        }
       } else {
         empty.classList.add('hidden');
       }
+
+      // Show "Load more" whenever more buffered items exist OR older Substack pages are available
+      const loadMoreWrap = document.getElementById('load-more-wrap');
+      const loadMoreBtn = document.getElementById('load-more-btn');
+      const loadMoreCount = document.getElementById('load-more-count');
+      const hasHiddenBuffered = matching.length > visibleItems.length;
+
+      if (hasHiddenBuffered || (visibleItems.length > 0 && hasMoreOnServer)) {
+        loadMoreWrap.classList.remove('hidden');
+        loadMoreBtn.disabled = isFetchingMore;
+        loadMoreBtn.textContent = isFetchingMore ? 'Loading older issues...' : 'Load more';
+        if (hasMoreOnServer) {
+          loadMoreCount.textContent = `Showing ${visibleItems.length} · More older issues available`;
+        } else {
+          loadMoreCount.textContent = `Showing ${visibleItems.length} of ${matching.length}`;
+        }
+      } else {
+        loadMoreWrap.classList.add('hidden');
+      }
     }
 
-    // OPEN ARTICLE HANDLER ("alls hondle read" - displays full email content in-site)
-    function openArticle(articleId) {
-      const article = articles.find(a => a.id === articleId);
+    // LOAD MORE OLDER / BACK-DATED ISSUES HANDLER
+    async function loadMorePosts() {
+      if (isFetchingMore) return;
+
+      const beforeVisible = articles.filter(a => currentCategory === 'all' || a.category === currentCategory).slice(0, visibleLimit).length;
+      visibleLimit += LOAD_STEP;
+
+      const matchingNow = articles.filter(a => currentCategory === 'all' || a.category === currentCategory);
+
+      // Fetch next older batch from /api/archive if we're nearing the end of buffered posts
+      if (liveArchiveActive && hasMoreOnServer && matchingNow.length <= visibleLimit) {
+        isFetchingMore = true;
+        renderFeed(currentCategory);
+
+        let pagesFetched = 0;
+        while (hasMoreOnServer && pagesFetched < 3) {
+          pagesFetched++;
+          const fetched = await fetchArchiveBatch(archiveOffset, ARCHIVE_BATCH);
+          if (!fetched || fetched.length === 0) break;
+
+          const updatedMatches = articles.filter(a => currentCategory === 'all' || a.category === currentCategory);
+          if (updatedMatches.length > beforeVisible) break;
+        }
+
+        isFetchingMore = false;
+      }
+
+      renderFeed(currentCategory);
+    }
+
+    // OPEN ARTICLE HANDLER (Displays full issue content in-site; lazy-loads back-dated posts)
+    async function openArticle(articleId) {
+      const article = articles.find(a => String(a.id) === String(articleId));
       if (!article) return;
+
+      currentOpenArticleId = String(articleId);
 
       document.getElementById('feed-view').classList.add('hidden');
       document.getElementById('reader-view').classList.remove('hidden');
@@ -710,18 +805,55 @@
       document.getElementById('reader-readtime').textContent = article.readTime;
       document.getElementById('reader-title').textContent = article.title;
       document.getElementById('reader-author').textContent = article.author;
-      document.getElementById('reader-body').innerHTML = article.content;
 
-      // WhatsApp share link with dynamic article title
-      const shareUrl = encodeURIComponent(window.location.href);
+      const shareUrl = encodeURIComponent(article.url || window.location.href);
       const shareText = encodeURIComponent(`Karanta wannan daga TechInHausa Newsletter: "${article.title}"`);
       document.getElementById('whatsapp-share-btn').href = `https://api.whatsapp.com/send?text=${shareText}%20${shareUrl}`;
 
+      const readerBody = document.getElementById('reader-body');
       window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      if (article.content) {
+        readerBody.innerHTML = article.content;
+        return;
+      }
+
+      // Fetch full body HTML for older back-dated Substack archive issues
+      if (article.slug) {
+        readerBody.innerHTML = `
+          <div class="py-12 text-center text-sm text-slate-500">
+            Loading full issue...
+          </div>
+        `;
+        try {
+          const res = await fetch(`/api/post?slug=${encodeURIComponent(article.slug)}`);
+          if (res.ok) {
+            const fullData = await res.json();
+            if (fullData && fullData.body_html) {
+              article.content = fullData.body_html;
+              if (currentOpenArticleId === String(articleId)) {
+                readerBody.innerHTML = article.content;
+              }
+              return;
+            }
+          }
+        } catch (err) {
+          // Fall back gracefully below
+        }
+      }
+
+      // Graceful fallback if full HTML cannot be reached
+      if (currentOpenArticleId === String(articleId)) {
+        readerBody.innerHTML = `
+          <p class="text-lg leading-relaxed font-normal text-[#162646]">${article.excerpt}</p>
+          ${article.url ? `<p class="pt-4"><a href="${article.url}" target="_blank" rel="noopener noreferrer" class="inline-block bg-[#d4a03b] hover:bg-[#c29030] text-[#162646] font-bold px-5 py-2.5 rounded-lg text-xs no-underline">Read full issue on Substack ↗</a></p>` : ''}
+        `;
+      }
     }
 
-    // CLOSE ARTICLE HANDLER (Returns to archive feed)
+    // CLOSE ARTICLE HANDLER (Returns to archive feed without resetting Load More state)
     function closeArticle() {
+      currentOpenArticleId = null;
       document.getElementById('reader-view').classList.add('hidden');
       document.getElementById('feed-view').classList.remove('hidden');
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -730,6 +862,7 @@
     // FILTER CATEGORY TABS
     function setCategory(category) {
       closeArticle();
+      visibleLimit = INITIAL_LIMIT;
 
       document.querySelectorAll('.cat-pill').forEach(btn => {
         if (btn.getAttribute('data-cat') === category) {
@@ -753,11 +886,68 @@
       renderFeed(category);
     }
 
+    // Fetch a paginated batch from Vercel /api/archive (full Substack back-dated archive)
+    async function fetchArchiveBatch(offset = 0, limit = ARCHIVE_BATCH) {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
+        const res = await fetch(`/api/archive?offset=${offset}&limit=${limit}`, { signal: controller.signal });
+        clearTimeout(timeoutId);
+
+        if (!res.ok) return null;
+        const data = await res.json();
+        if (!data || !Array.isArray(data.posts)) return null;
+
+        const mapped = data.posts.map((post, idx) => {
+          const cleanExcerpt = (post.excerpt || '').replace(/\s+/g, ' ').trim();
+          const excerpt = cleanExcerpt.length > 190 ? cleanExcerpt.slice(0, 190) + '...' : cleanExcerpt;
+          const cat = classifyPost(post.title, cleanExcerpt, post.tags || []);
+
+          return {
+            id: post.id || (1000 + offset + idx),
+            slug: post.slug,
+            url: post.canonical_url,
+            title: post.title,
+            category: cat,
+            date: formatDisplayDate(post.post_date),
+            readTime: estimateReadTime(post.wordcount, cleanExcerpt),
+            author: post.author || 'Ibrahim Malamiromba',
+            isLatest: offset === 0 && idx === 0,
+            source: 'live',
+            excerpt: excerpt,
+            content: null
+          };
+        });
+
+        if (offset === 0 && mapped.length > 0) {
+          articles = mapped;
+        } else if (mapped.length > 0) {
+          const existingIds = new Set(articles.map(a => a.id));
+          articles = [...articles, ...mapped.filter(m => !existingIds.has(m.id))];
+        }
+
+        archiveOffset = data.nextOffset || (offset + mapped.length);
+        hasMoreOnServer = Boolean(data.hasMore);
+        return mapped;
+      } catch (err) {
+        return null;
+      }
+    }
+
     // SUBSTACK LIVE BACKEND INGESTION
-    // Queries techinhausa.substack.com/feed (permanent Substack home) so live posts continue
-    // syncing automatically even after newsletter.techinhausa.org points to Vercel.
+    // 1) Tries Vercel /api/archive (supports unlimited back-dated posts via Load More).
+    // 2) Falls back to Substack RSS via rss2json (for local file:// previews).
     async function initSubstackFeed() {
       const syncStatus = document.getElementById('sync-status');
+
+      const archiveBatch = await fetchArchiveBatch(0, ARCHIVE_BATCH);
+      if (archiveBatch && archiveBatch.length > 0) {
+        liveArchiveActive = true;
+        syncStatus.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500"></span><span>Live · Substack Archive</span>`;
+        renderFeed(currentCategory);
+        return;
+      }
+
       const feedUrls = [
         'https://techinhausa.substack.com/feed',
         'https://newsletter.techinhausa.org/feed'
@@ -780,26 +970,19 @@
                   ? item.content
                   : (item.description || '');
 
-                // Strip HTML for clean excerpt and reading time calculation
                 const div = document.createElement('div');
                 div.innerHTML = fullHtml;
                 const plainText = (div.textContent || div.innerText || '').replace(/\s+/g, ' ').trim();
-                const wordCount = plainText ? plainText.split(/\s+/).length : 250;
-                const readMinutes = Math.max(1, Math.round(wordCount / 200));
                 const excerpt = plainText.length > 190 ? plainText.slice(0, 190) + '...' : plainText;
-
                 const cat = classifyPost(item.title, plainText, item.categories || []);
-                const dateObj = new Date(item.pubDate);
-                const dateStr = isNaN(dateObj.getTime())
-                  ? item.pubDate
-                  : dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
                 return {
                   id: 100 + index,
+                  url: item.link,
                   title: item.title,
                   category: cat,
-                  date: dateStr,
-                  readTime: `${readMinutes} min read`,
+                  date: formatDisplayDate(item.pubDate),
+                  readTime: estimateReadTime(0, plainText),
                   author: item.author || 'Ibrahim Malamiromba',
                   isLatest: index === 0,
                   source: 'live',
@@ -808,7 +991,6 @@
                 };
               });
 
-              // Replace dummy showcase posts with real live Substack posts
               articles = livePosts;
               syncStatus.innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500"></span><span>Live · ${livePosts.length} Issues Synced</span>`;
               renderFeed(currentCategory);

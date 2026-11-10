@@ -43,7 +43,10 @@ An elegant, editorial publication website designed for **TechInHausa**, built to
    - Direct "Share on WhatsApp" button with custom pre-filled message.
    - Substack email capture box at the bottom of every article.
    - Smooth `← Back to all emails` return navigation.
-6. **Persistent Sticky WhatsApp Footer:**
+6. **Full Back-Dated Archive Pagination ("Load more"):**
+   - Fetches paginated Substack archive history via `/api/archive` (`offset=0, 10, 20...`), so readers can click **Load more** to browse and read older back-dated issues all the way to your earliest post.
+   - Lazy-loads complete article HTML via `/api/post?slug=...` on click.
+7. **Persistent Sticky WhatsApp Footer:**
    - Fixed at the bottom of the viewport with official WhatsApp green badge.
    - Direct link to official channel: `https://whatsapp.com/channel/0029VbCMK3rF6smqiLSC493j`.
 
@@ -54,7 +57,11 @@ An elegant, editorial publication website designed for **TechInHausa**, built to
 ```
 techinhausa-newsletter/
 ├── index.html          # Complete responsive web application
-├── server.js           # Zero-dependency Node.js server with Substack RSS proxy
+├── api/
+│   ├── _substack.js    # Shared Substack API HTTPS client
+│   ├── archive.js      # Vercel Serverless function for paginated historical posts
+│   └── post.js         # Vercel Serverless function for full back-dated post content
+├── server.js           # Zero-dependency Node.js server with local /api/* support
 ├── vercel.json         # 1-click Vercel deployment configuration
 ├── package.json        # Project metadata & npm scripts
 ├── assets/             # Brand logos (emblem & full wordmark)

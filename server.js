@@ -17,7 +17,19 @@ const MIME_TYPES = {
   '.ico': 'image/x-icon'
 };
 
+const archiveHandler = require('./api/archive');
+const postHandler = require('./api/post');
+
 const server = http.createServer((req, res) => {
+  const cleanPath = req.url.split('?')[0];
+
+  if (cleanPath === '/api/archive') {
+    return archiveHandler(req, res);
+  }
+  if (cleanPath === '/api/post') {
+    return postHandler(req, res);
+  }
+
   // Substack RSS Proxy Route to bypass browser CORS if needed
   if (req.url === '/api/feed') {
     https.get(SUBSTACK_FEED_URL, (subRes) => {
