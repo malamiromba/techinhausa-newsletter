@@ -19,7 +19,7 @@ An elegant, editorial publication website designed for **TechInHausa**, built to
 ## Core Features
 
 1. **Substack Backend Connection:**
-   - Client-side and server-side automated ingestion from Substack RSS (`https://techinhausa.substack.com/feed` with fallback to `https://newsletter.techinhausa.org/feed`).
+   - Client-side and server-side automated ingestion from Substack RSS (`https://ibrahimmalamiromba.substack.com/feed` with fallback to `https://newsletter.techinhausa.org/feed`).
    - Automatic classification of incoming posts into the 5 core categories (`Non-technical`, `AI update`, `Practical guide`, `Stories`, `Ads`).
    - Replaces placeholder showcase posts with live Substack articles once connected.
 2. **Editorial Hero & Key Metrics:**

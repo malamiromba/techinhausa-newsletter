@@ -12,14 +12,21 @@ module.exports = async (req, res) => {
     const reqUrl = new URL(req.url, 'http://localhost');
     const offset = Math.max(0, parseInt(reqUrl.searchParams.get('offset') || '0', 10) || 0);
     const limit = Math.min(24, Math.max(1, parseInt(reqUrl.searchParams.get('limit') || '8', 10) || 8));
+    const fetchLimit = Math.min(50, Math.max(12, offset + limit));
 
-    const rawPosts = await fetchSubstackJson(`/api/v1/archive?sort=new&offset=${offset}&limit=${limit}`);
-    if (!Array.isArray(rawPosts)) {
+    const rawData = await fetchSubstackJson(`/api/v1/archive?sort=new&limit=${fetchLimit}`);
+    const rawList = Array.isArray(rawData)
+      ? rawData
+      : (rawData && Array.isArray(rawData.posts) ? rawData.posts : null);
+
+    if (!rawList) {
       res.statusCode = 502;
       return res.end(JSON.stringify({ error: 'Unexpected response format from Substack archive' }));
     }
 
-    const posts = rawPosts.map((item) => {
+    const sliced = rawList.slice(offset, offset + limit);
+
+    const posts = sliced.map((item) => {
       const byline = Array.isArray(item.publishedBylines) && item.publishedBylines[0];
       const tags = [
         ...(Array.isArray(item.postTags)
@@ -47,8 +54,8 @@ module.exports = async (req, res) => {
     res.statusCode = 200;
     return res.end(JSON.stringify({
       posts,
-      hasMore: rawPosts.length === limit,
-      nextOffset: offset + rawPosts.length
+      hasMore: Boolean((rawData && rawData.nextCursor) || rawList.length > offset + sliced.length),
+      nextOffset: offset + sliced.length
     }));
   } catch (err) {
     res.statusCode = 502;
