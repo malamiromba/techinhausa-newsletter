@@ -1,6 +1,13 @@
 {
   "version": 2,
   "cleanUrls": true,
+  "redirects": [
+    {
+      "source": "/subscribe",
+      "destination": "https://malamiromba.substack.com/embed",
+      "permanent": false
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",

@@ -919,157 +919,217 @@
       return 'non-technical';
     }
 
-    // Curated Publication Articles (Active & Pre-rendered)
+    // Live Publication Articles from malamiromba.substack.com
     let articles = [
       {
-        id: 1,
-        title: "Mun zo ne mu kaddamar maka da ilimin fasaha a yau / Launching Your Tech Career Today",
-        category: "stories",
-        date: "Nov 8, 2026",
-        readTime: "4 min read",
+        id: 224262510,
+        slug: "how-to-start-learning-coding-for",
+        url: "https://malamiromba.substack.com/p/how-to-start-learning-coding-for",
+        title: "How to start learning coding for free",
+        category: "practical-guide",
+        date: "Nov 10, 2026",
+        readTime: "14 min read",
         author: "Ibrahim Malamiromba",
         isLatest: true,
-        source: "curated",
-        excerpt: "Wannan shine makon kaddamar da babban shirinmu na baiwa kowa damar koyon fasaha da AI cikin harshen Hausa da Turanci, tare da dabarun samun aiki da gina sana'a a zamanin fasaha.",
-        content: `
-          <p class="text-lg leading-relaxed font-normal text-[#162646]">
-            Barka da zuwa wannan gagarumin babi na TechInHausa! Wannan fitowar ita ce kaddamar da babban shirinmu na kawo sauyi a yadda al'ummar Arewa da masu jin harshen Hausa a fadin duniya ke samun damar shiga duniyar fasaha.
-          </p>
-          <h3>Me yasa Muke Kaddamar da Wannan A Yanzu?</h3>
-          <p>
-            Duniyar fasaha tana tafiya da sauri da ba a taba gani ba. Zuwan Generative AI, Automation, da sababbin dabarun aiki ya nuna cewa harshe bai kamata ya zama shamaki tsakanin matasa masu hazaka da samun manyan kudaden shiga a yanar gizo ba.
-          </p>
-          <blockquote>
-            "Manufarmu ita ce tabbatar da cewa duk wanda yake da sha'awa, yana da hanyar da zai koya, ya gina, kuma ya sami aiki ba tare da matsalar rashin fahimtar yaren Turanci ba."
-          </blockquote>
-          <h3>Abubuwan Da Zaka Rika Samu A Wannan Newsletter:</h3>
-          <ul>
-            <li><strong>AI Update:</strong> Labaran sababbin manhajojin AI da yadda zasu shafe ka.</li>
-            <li><strong>Practical Guide:</strong> Mataki-mataki kan yadda zaka gina bots, shafukan yanar gizo, da tsare-tsaren aiki.</li>
-            <li><strong>Real Stories:</strong> Labaran matasan da suka fara daga sifiri suka zama kwararru.</li>
-            <li><strong>Digital Skills:</strong> Dabarun samun aikin nesa (remote work) da cinikayya ta intanet.</li>
-          </ul>
-          <h3>Yadda Zaka Fara A Yau</h3>
-          <p>
-            Ka tabbatar ka yi subscribing da imel dinka a sama, sannan ka shiga rukuninmu na WhatsApp ta hanyar danna maballin da ke kasa.
-          </p>
-        `
+        source: "live",
+        excerpt: "A bidiyona na baya, inda na yi bayani kan dalilin da ya sa koyon coding yake da muhimmanci har yanzu, da yawa daga cikinku sun yi min tambaya guda: “To, daga ina ya kamata mutum ya fara?”",
+        content: null
       },
       {
-        id: 2,
-        title: "Claude 3.7 Sonnet & Gemini 2.5: What Every Non-Coder Needs to Know About Reasoning AI",
-        category: "ai-update",
-        date: "Nov 5, 2026",
-        readTime: "5 min read",
-        author: "TechInHausa Team",
-        isLatest: false,
-        source: "curated",
-        excerpt: "A plain-language breakdown of how modern reasoning models can help founders automate repetitive research, structure business workflows, and prototype ideas without writing complex code.",
-        content: `
-          <p class="text-lg leading-relaxed font-normal text-[#162646]">
-            The transition from standard chat models to "Reasoning Models" is the single biggest shift in artificial intelligence since the launch of ChatGPT.
-          </p>
-          <h3>What Is 'Reasoning AI' in Simple Terms?</h3>
-          <p>
-            Traditional LLMs predict the next word quickly, like someone talking without thinking. Reasoning models (such as Claude 3.7 with extended thinking and Gemini 2.5 Flash Thinking) produce an internal "Chain of Thought" before answering. They inspect multiple angles, verify their math, check edge cases, and catch their own errors.
-          </p>
-          <h3>Why It Matters If You Do Not Code:</h3>
-          <p>
-            You can now provide a raw business idea or a messy Excel spreadsheet, and ask the model to draft an end-to-end plan, identify hidden financial risks, and even generate complete automation blueprints without hiring a developer.
-          </p>
-          <blockquote>
-            "You do not need to become a programmer to leverage AI. You only need to learn how to express business logic clearly."
-          </blockquote>
-          <h3>3 Real Ways Founders in Northern Nigeria Use This Today:</h3>
-          <ol>
-            <li><strong>Drafting Contract Agreements:</strong> Reviewing partnership terms and spotting one-sided clauses.</li>
-            <li><strong>Inventory Forecasting:</strong> Calculating stock reorders based on seasonal demand trends.</li>
-            <li><strong>Multilingual Customer Support:</strong> Generating automatic responses in both Hausa and English.</li>
-          </ol>
-        `
-      },
-      {
-        id: 3,
-        title: "Yadda Zaka Gina AI Bot a WhatsApp Kyauta Tare da n8n da Gemini",
-        category: "practical-guide",
-        date: "Nov 2, 2026",
-        readTime: "6 min read",
-        author: "TechInHausa Lab",
-        isLatest: false,
-        source: "curated",
-        excerpt: "Mataki-mataki kan yadda ake amfani da Google AI Studio da WhatsApp Business don amsa sakonnin kwastomomi da aika bayanan yau da kullun cikin sauki.",
-        content: `
-          <p class="text-lg leading-relaxed font-normal text-[#162646]">
-            A cikin wannan jagorar, zamu nuna muku yadda zaku hada WhatsApp da fasahar Gemini AI ba tare da kun biya kudin sabar (server) ko siyan manhajoji masu tsada ba.
-          </p>
-          <h3>Abubuwan da Kake Bukata:</h3>
-          <ol>
-            <li>Google AI Studio API Key (Kyauta).</li>
-            <li>Asusun n8n Cloud ko n8n na gida a kwamfutarka.</li>
-            <li>Lambar WhatsApp Business ta Cloud API.</li>
-          </ol>
-          <h3>Mataki Na Farko: Samun API Key</h3>
-          <p>
-            Shiga aistudio.google.com, ka shiga da asusunka na Gmail, sannan ka danna 'Get API Key'. Ka ajiye wannan lambar a wuri mai tsaro domin ita ce zata baiwa n8n izinin yin magana da Gemini.
-          </p>
-          <h3>Mataki Na Biyu: Saita Workflow a n8n</h3>
-          <p>
-            A cikin n8n, zaka zabi 'Webhook Trigger' wanda zai karbi sakon da ya shigo WhatsApp, sannan ka tura shi zuwa 'Google Gemini node' tare da umarnin (System Prompt) da ke bayyana yadda kake so ya amsa da harshen Hausa ko Turanci.
-          </p>
-        `
-      },
-      {
-        id: 4,
-        title: "Fassarar Kalmomin AI a Saukake: Tokens, Agents, da Context Windows",
+        id: 224136307,
+        slug: "a-new-chapter-begins-welcome-to-techinhausa",
+        url: "https://malamiromba.substack.com/p/a-new-chapter-begins-welcome-to-techinhausa",
+        title: "A New Chapter Begins: Welcome to TechInHausa!",
         category: "non-technical",
-        date: "Oct 29, 2026",
+        date: "Nov 09, 2026",
+        readTime: "5 min read",
+        author: "Ibrahim Malamiromba",
+        isLatest: false,
+        source: "live",
+        excerpt: "Da fatan wannan saƙo ya same ka lafiya.",
+        content: null
+      },
+      {
+        id: 197332241,
+        slug: "the-no-collar-economy-and-ai-newsletter",
+        url: "https://malamiromba.substack.com/p/the-no-collar-economy-and-ai-newsletter",
+        title: "The No-Collar Economy and AI (Newsletter)",
+        category: "ai-update",
+        date: "May 12, 2026",
+        readTime: "5 min read",
+        author: "Ibrahim Malamiromba",
+        isLatest: false,
+        source: "live",
+        excerpt: "A duniyar yau, mutane na kallon fasahar AI a matsayin abin da zai ruguza aikin yi baki ɗaya. Abu ne mai sauƙi mutum ya ji hakan, domin muna ganin ayyukan da ke gushewa a fili sakamakon zuwan...",
+        content: null
+      },
+      {
+        id: 185814225,
+        slug: "we-are-here-to-launch-your-tech-career",
+        url: "https://malamiromba.substack.com/p/we-are-here-to-launch-your-tech-career",
+        title: "We are here to launch your tech career today ",
+        category: "stories",
+        date: "Apr 19, 2026",
         readTime: "3 min read",
         author: "Ibrahim Malamiromba",
         isLatest: false,
-        source: "curated",
-        excerpt: "Bayani a sarari game da kalmomin da ake amfani dasu a fagen Artificial Intelligence ba tare da rikitarwa ba, domin kowa ya fahimta.",
-        content: `
-          <p class="text-lg leading-relaxed font-normal text-[#162646]">
-            Idan ka shiga shafukan sada zumunta ko labaran fasaha, zaka ji ana yawan ambaton kalmomin AI wadanda da yawa suke ganin kamar abin tsoro ne. Ga fassararsu a saukake:
-          </p>
-          <div class="space-y-4 my-6">
-            <div class="p-4 bg-slate-50 border border-slate-200 rounded-lg">
-              <h4 class="font-bold text-[#233a69]">1. Token:</h4>
-              <p class="text-sm text-slate-600 mt-1">Token shine guntun kalma ko harafi da kwamfuta ke karantawa. Kalmomi 1,000 na Turanci sun kai kusan token 750.</p>
-            </div>
-            <div class="p-4 bg-slate-50 border border-slate-200 rounded-lg">
-              <h4 class="font-bold text-[#233a69]">2. Context Window:</h4>
-              <p class="text-sm text-slate-600 mt-1">Shine tsawon littafi ko sakonnin da AI zai iya rike su a kwakwalwarsa a lokaci guda yayin tattaunawa ba tare da ya manta ba.</p>
-            </div>
-            <div class="p-4 bg-slate-50 border border-slate-200 rounded-lg">
-              <h4 class="font-bold text-[#233a69]">3. AI Agent:</h4>
-              <p class="text-sm text-slate-600 mt-1">Manhaja ce mai cin gashin kanta wacce ba wai kawai rubutu take yi ba, a'a tana iya bude imel, binciken yanar gizo, da aiko maka da sakamako.</p>
-            </div>
-          </div>
-        `
+        source: "live",
+        excerpt: "Barka da wannan lokaci,",
+        content: null
       },
       {
-        id: 5,
-        title: "Exclusive: 3 Months Free Cloud Hosting for Developers & AI Builders in Northern Nigeria",
-        category: "ads",
-        date: "Oct 25, 2026",
-        readTime: "2 min read",
-        author: "TechInHausa Partner",
+        id: 193595536,
+        slug: "intentional-craftsmanship",
+        url: "https://malamiromba.substack.com/p/intentional-craftsmanship",
+        title: "Intentional Craftsmanship",
+        category: "non-technical",
+        date: "Apr 08, 2026",
+        readTime: "7 min read",
+        author: "Ibrahim Malamiromba",
         isLatest: false,
-        source: "curated",
-        excerpt: "Special partner allocation for TechInHausa subscribers. Deploy production databases, Next.js sites, and background agents with low latency.",
-        content: `
-          <p class="text-lg leading-relaxed font-normal text-[#162646]">
-            Muna farin cikin sanar da cewa mun kulla yarjejeniya da abokan huldar mu don baiwa masu karanta TechInHausa kyautar watanni 3 na hosting kyauta.
-          </p>
-          <div class="my-6 p-6 bg-[#fef8ee] border border-[#d4a03b]/40 rounded-xl text-center">
-            <h4 class="text-xl font-bold text-[#162646] mb-2">Discount Code: TECHINHAUSA2026</h4>
-            <p class="text-xs text-slate-600 mb-4">Yana aiki ga sababbin asusu don deploy Next.js, Postgres, da Docker containers.</p>
-            <a href="https://whatsapp.com/channel/0029VbCMK3rF6smqiLSC493j" target="_blank" rel="noopener noreferrer" class="inline-block bg-[#d4a03b] hover:bg-[#c29030] text-[#162646] font-bold px-6 py-2.5 rounded-lg text-xs">
-              Claim Offer via WhatsApp Channel
-            </a>
-          </div>
-        `
+        source: "live",
+        excerpt: "Bari in yi maka magana ta gaskiya.",
+        content: null
+      },
+      {
+        id: 192224077,
+        slug: "institutionalizing-yourself-the-real",
+        url: "https://malamiromba.substack.com/p/institutionalizing-yourself-the-real",
+        title: "Institutionalizing Yourself (The Real Game Most People Are Missing)",
+        category: "practical-guide",
+        date: "Mar 26, 2026",
+        readTime: "8 min read",
+        author: "Ibrahim Malamiromba",
+        isLatest: false,
+        source: "live",
+        excerpt: "a ƙarshen wasiƙar imel ta makon da ya gabata, na ɗan taɓo wani abu da nake ta tunani a kai sosai a kwanakin nan, wato yadda za ka gina kanka har ka zama kamar wata hukuma (institution).",
+        content: null
+      },
+      {
+        id: 190811301,
+        slug: "state-of-ai-war-and-capital-markets",
+        url: "https://malamiromba.substack.com/p/state-of-ai-war-and-capital-markets",
+        title: "State of AI, War, and Capital Markets Why It Matters for Us",
+        category: "ai-update",
+        date: "Mar 13, 2026",
+        readTime: "12 min read",
+        author: "Ibrahim Malamiromba",
+        isLatest: false,
+        source: "live",
+        excerpt: "Abubuwa da yawa sun faru a kwanakin nan.",
+        content: null
+      },
+      {
+        id: 189752667,
+        slug: "todays-wizardry-is-tomorrows-bare",
+        url: "https://malamiromba.substack.com/p/todays-wizardry-is-tomorrows-bare",
+        title: "Today’s Wizardry Is Tomorrow’s Bare Minimum",
+        category: "non-technical",
+        date: "Mar 03, 2026",
+        readTime: "7 min read",
+        author: "Ibrahim Malamiromba",
+        isLatest: false,
+        source: "live",
+        excerpt: "Shekaru da dama da suka wuce, muna makarantar firamare, ana ba mu littattafan marubutan Najeriya mu karanta mu kuma gabatar da rahoto. A wancan lokaci tsarin karatu ba’a gurɓata shi ba.",
+        content: null
+      },
+      {
+        id: 189115986,
+        slug: "the-collapse-of-certificates-and",
+        url: "https://malamiromba.substack.com/p/the-collapse-of-certificates-and",
+        title: "The Collapse of Certificates And the Rise of Portfolio Power",
+        category: "practical-guide",
+        date: "Feb 25, 2026",
+        readTime: "6 min read",
+        author: "Ibrahim Malamiromba",
+        isLatest: false,
+        source: "live",
+        excerpt: "Makon da ya gabata na yi maka  bayani a kan yadda Ƙirƙirarriyar Basira (AI) ta iso, tare da tunatarwa kan lokacin cutar korona, saƙon da ya jawo hankalin mutane sama da dubu biyar ga wannan ...",
+        content: null
+      },
+      {
+        id: 188134614,
+        slug: "remember-early-2020",
+        url: "https://malamiromba.substack.com/p/remember-early-2020",
+        title: "Remember early 2020 ?",
+        category: "non-technical",
+        date: "Feb 16, 2026",
+        readTime: "7 min read",
+        author: "Ibrahim Malamiromba",
+        isLatest: false,
+        source: "live",
+        excerpt: "Kana tuna farkon shekarar 2020?",
+        content: null
+      },
+      {
+        id: 187483401,
+        slug: "gaskiyar-abin-da-ke-faruwa-a-fannin",
+        url: "https://malamiromba.substack.com/p/gaskiyar-abin-da-ke-faruwa-a-fannin",
+        title: "Gaskiyar Abin da Ke Faruwa a Fannin Fasaha (Tech) a Arewacin Nijeriya",
+        category: "non-technical",
+        date: "Feb 10, 2026",
+        readTime: "8 min read",
+        author: "Ibrahim Malamiromba",
+        isLatest: false,
+        source: "live",
+        excerpt: "Assalamu alaikum  ,",
+        content: null
+      },
+      {
+        id: 187072908,
+        slug: "should-you-still-learn-to-code",
+        url: "https://malamiromba.substack.com/p/should-you-still-learn-to-code",
+        title: "Should You Still Learn to Code??",
+        category: "non-technical",
+        date: "Feb 06, 2026",
+        readTime: "5 min read",
+        author: "Ibrahim Malamiromba",
+        isLatest: false,
+        source: "live",
+        excerpt: "Barka da warhaka {first_name | default: "ɗan’uwa/Yar’uwa"},",
+        content: null
+      },
+      {
+        id: 186714793,
+        slug: "the-night-that-changed-everything",
+        url: "https://malamiromba.substack.com/p/the-night-that-changed-everything",
+        title: "THE NIGHT THAT CHANGED EVERYTHING, AND WHY YOU MUST CHOOSE YOUR OWN TURNING POINT",
+        category: "non-technical",
+        date: "Feb 03, 2026",
+        readTime: "6 min read",
+        author: "Ibrahim Malamiromba",
+        isLatest: false,
+        source: "live",
+        excerpt: "Wani yaro ne mai shekaru goma sha biyar, mahaifinsa ya tura shi kwana a gidan wani bare.",
+        content: null
+      },
+      {
+        id: 185814593,
+        slug: "were-here-to-launch-your-tech-career",
+        url: "https://malamiromba.substack.com/p/were-here-to-launch-your-tech-career",
+        title: "We're here to launch your tech career today.",
+        category: "stories",
+        date: "Jan 26, 2026",
+        readTime: "3 min read",
+        author: "Ibrahim Malamiromba",
+        isLatest: false,
+        source: "live",
+        excerpt: "Barka da wannan lokaci,",
+        content: null
+      },
+      {
+        id: 185302557,
+        slug: "new-year-new-chapters-sabuwar-shekara",
+        url: "https://malamiromba.substack.com/p/new-year-new-chapters-sabuwar-shekara",
+        title: "New Year, New Chapters — - Sabuwar shekara, sabon babi",
+        category: "non-technical",
+        date: "Jan 22, 2026",
+        readTime: "3 min read",
+        author: "Ibrahim Malamiromba",
+        isLatest: false,
+        source: "live",
+        excerpt: "Welcome to the Malamiromba Community 👋🏽",
+        content: null
       }
     ];
 
@@ -1310,7 +1370,7 @@
     async function fetchArchiveBatch(offset = 0, limit = ARCHIVE_BATCH) {
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000);
+        const timeoutId = setTimeout(() => controller.abort(), 15000);
         const res = await fetch(`/api/archive?offset=${offset}&limit=${limit}`, { signal: controller.signal });
         clearTimeout(timeoutId);
 
@@ -1374,7 +1434,7 @@
         try {
           const proxyUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}`;
           const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 5000);
+          const timeoutId = setTimeout(() => controller.abort(), 15000);
 
           const res = await fetch(proxyUrl, { signal: controller.signal });
           clearTimeout(timeoutId);
