@@ -1,6 +1,6 @@
 const https = require('https');
 
-const SUBSTACK_HOST = 'ibrahimmalamiromba.substack.com';
+const SUBSTACK_HOST = 'malamiromba.substack.com';
 
 /**
  * Fetch JSON cleanly from Substack public API over HTTPS (handles redirects).
