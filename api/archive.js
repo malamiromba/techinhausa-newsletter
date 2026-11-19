@@ -2,12 +2,12 @@ const { fetchSubstackJson, SUBSTACK_HOST } = require('./_substack');
 
 /**
  * Vercel Serverless Route: GET /api/archive?limit=25&cursor=<cursor>&offset=0
- * Fetches Substack archive posts (newest through all historical back-dated issues).
+ * Fetches Substack posts (real-time live feed plus all historical back-dated issues).
  * Substack API maximum limit is 25 posts per request and paginates via cursor.
  */
 module.exports = async (req, res) => {
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
-  res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=600');
+  res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=120');
 
   try {
     const reqUrl = new URL(req.url, 'http://localhost');
@@ -15,19 +15,30 @@ module.exports = async (req, res) => {
     const offset = Math.max(0, parseInt(reqUrl.searchParams.get('offset') || '0', 10) || 0);
     const limit = Math.min(25, Math.max(1, parseInt(reqUrl.searchParams.get('limit') || '25', 10) || 25));
 
-    let substackPath = `/api/v1/archive?sort=new&limit=${limit}`;
-    if (cursor) {
-      substackPath += `&cursor=${encodeURIComponent(cursor)}`;
+    let rawData = null;
+    // Primary: fetch from /api/v1/posts which reflects newly published posts in real-time
+    try {
+      let postsPath = `/api/v1/posts?sort=new&limit=${limit}`;
+      if (cursor) {
+        postsPath += `&cursor=${encodeURIComponent(cursor)}`;
+      }
+      rawData = await fetchSubstackJson(postsPath);
+    } catch (postsErr) {
+      // Fallback: /api/v1/archive in case /api/v1/posts encounters issues
+      let archivePath = `/api/v1/archive?sort=new&limit=${limit}`;
+      if (cursor) {
+        archivePath += `&cursor=${encodeURIComponent(cursor)}`;
+      }
+      rawData = await fetchSubstackJson(archivePath);
     }
 
-    const rawData = await fetchSubstackJson(substackPath);
     const rawList = Array.isArray(rawData)
       ? rawData
       : (rawData && Array.isArray(rawData.posts) ? rawData.posts : null);
 
     if (!rawList) {
       res.statusCode = 502;
-      return res.end(JSON.stringify({ error: 'Unexpected response format from Substack archive' }));
+      return res.end(JSON.stringify({ error: 'Unexpected response format from Substack' }));
     }
 
     // If offset is requested without cursor, slice locally; if cursor is used, take rawList directly
@@ -70,6 +81,6 @@ module.exports = async (req, res) => {
     }));
   } catch (err) {
     res.statusCode = 502;
-    return res.end(JSON.stringify({ error: 'Failed to load Substack archive', details: err.message }));
+    return res.end(JSON.stringify({ error: 'Failed to load Substack posts', details: err.message }));
   }
 };
