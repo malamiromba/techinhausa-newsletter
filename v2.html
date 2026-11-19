@@ -411,6 +411,12 @@
     .border-\[\#d4a03b\]\/30 { border-color: rgb(212 160 59 / 0.3); }
     .border-\[\#d4a03b\]\/40 { border-color: rgb(212 160 59 / 0.4); }
 
+    .feed-item:last-child {
+      border-bottom-width: 0 !important;
+      border-bottom: none !important;
+      padding-bottom: 0 !important;
+    }
+
     /* Borders Radius, Shadows, Effects, Media & Interaction */
     .rounded { border-radius: 0.25rem; }
     .rounded-md { border-radius: 0.375rem; }
@@ -519,64 +525,106 @@
     @media (min-width: 768px) {
       .md\:text-5xl { font-size: 3rem; line-height: 1; }
     }
-</style>
-<style>
-:root{--news-ink:#161612;--news-yellow:#ffd629;--news-line:#deded6}
-html{scroll-padding-top:90px}
-body :is(a,button,input):focus-visible{outline:3px solid #806600;outline-offset:3px}
-body > header > div,.newsletter-hero,.newsletter-archive,.reader-whatsapp{width:min(1150px,calc(100% - 40px));max-width:none;margin-inline:auto}
-.newsletter-hero{display:grid;grid-template-columns:1.13fr 1fr;align-items:center;gap:clamp(30px,6vw,80px);padding-block:clamp(38px,7vw,96px);color:var(--news-ink)}
-.eyebrow{font-size:.875rem;font-weight:750;margin:0 0 14px}
-.hero-copy h1{font:800 clamp(2.25rem,4.35vw,4.35rem)/1.06 system-ui,sans-serif;letter-spacing:-.06em;margin:0}
-.hero-copy h1 span{display:block;width:fit-content;margin-top:.14em;font:700 1.17em/1.04 Georgia,serif;letter-spacing:-.055em;background:linear-gradient(transparent 69%,var(--news-yellow) 69%)}
-.hero-intro{font-size:1.125rem;line-height:1.6;max-width:41ch;margin:24px 0;color:#505046}
-.signup-box{max-width:29rem;margin-bottom:16px}
-.signup-box form{border:1px solid #a4a497}
-.signup-box button,.reader-whatsapp a{background:var(--news-yellow);color:var(--news-ink);font-size:.95rem;font-weight:750}
-.hero-link,.featured-issue button{text-decoration:underline;text-underline-offset:.24em;font-weight:700}
-.featured-issue{padding:clamp(20px,3.5vw,40px);background:var(--news-ink);color:#fff;border-radius:16px}
-.featured-issue .eyebrow{color:var(--news-yellow)}
-.issue-art{display:flex;align-items:center;justify-content:center;min-height:132px;padding:12px;border-radius:8px;background-color:var(--news-yellow);background-image:linear-gradient(#16161219 1px,transparent 1px),linear-gradient(90deg,#16161219 1px,transparent 1px);background-size:21px 21px;color:var(--news-ink);margin-bottom:24px}
-.issue-art span{font-size:.9rem;font-weight:800;padding:6px 10px;border:2px solid;border-radius:5px;background:#ffdf4d;box-shadow:3px 3px var(--news-ink)}
-.issue-art i{width:clamp(10px,4vw,38px);height:2px;background:var(--news-ink)}
-.featured-issue h2,.archive-heading,.reader-whatsapp h2{font:800 clamp(1.65rem,3vw,2.75rem)/1.1 system-ui,sans-serif;letter-spacing:-.04em}
-.featured-issue p:not(.eyebrow){margin:12px 0}
-.feature-meta{font-size:.875rem;color:#d9d9d1}
-.featured-issue button{color:var(--news-yellow)}
-.reader-whatsapp{display:flex;justify-content:space-between;align-items:center;gap:16px;background:#fff6cd;border-radius:12px;padding:24px;margin-bottom:32px}
-.reader-whatsapp h2{font-size:1.45rem;margin-bottom:6px}
-.reader-whatsapp a{border-radius:6px;padding:11px 16px;text-align:center}
-.newsletter-archive{padding:28px 0 60px;border-top:1px solid var(--news-line)}
-.archive-heading{margin-bottom:16px}
-.newsletter-archive .cat-pill{font-size:.9rem}
-#post-feed{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
-#post-feed > article{margin:0!important;border:1px solid var(--news-line);border-radius:12px;padding:20px;display:flex;flex-direction:column}
-#post-feed h2{font:750 1.3rem/1.25 system-ui,sans-serif;letter-spacing:-.025em;color:var(--news-ink)}
-#post-feed article > p{font-size:1rem}
-#post-feed article > div:last-child{margin-top:auto}
-#post-feed article > div:first-child button{color:#765400}
-@media(max-width:850px){#post-feed{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:680px){.newsletter-hero,#post-feed{grid-template-columns:minmax(0,1fr)}.reader-whatsapp{align-items:flex-start;flex-direction:column}.hero-copy h1{font-size:clamp(2.15rem,7.5vw,3.6rem)}}
+
+    /* Refined Redesign v2 Enhancements */
+    .hero-split-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      align-items: center;
+      gap: clamp(28px, 4vw, 56px);
+    }
+    @media (max-width: 900px) {
+      .hero-split-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+    }
+    .featured-card {
+      background: linear-gradient(145deg, #162646 0%, #1e335d 100%);
+      border: 1px solid rgba(212, 160, 59, 0.35);
+      box-shadow: 0 10px 25px -5px rgba(22, 38, 70, 0.35), 0 8px 10px -6px rgba(22, 38, 70, 0.2);
+    }
+    .issue-steps-art {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      background: rgba(254, 248, 238, 0.08);
+      border: 1px solid rgba(212, 160, 59, 0.25);
+    }
+    .step-pill {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 5px;
+      background: #ffd629;
+      color: #161612;
+      box-shadow: 2px 2px 0px rgba(0,0,0,0.3);
+      line-height: 1;
+    }
+    .step-divider {
+      width: 14px;
+      height: 2px;
+      background: #d4a03b;
+    }
+    /* Grid Archive */
+    #post-feed {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+    }
+    @media (max-width: 960px) {
+      #post-feed {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+      }
+    }
+    @media (max-width: 640px) {
+      #post-feed {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+    }
+    .archive-card {
+      background-color: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.2s ease-in-out;
+    }
+    .archive-card:hover {
+      border-color: #233a69;
+      box-shadow: 0 6px 20px -4px rgba(35, 58, 105, 0.1);
+      transform: translateY(-2px);
+    }
+
 </style>
 </head>
 <body class="bg-white text-slate-900 antialiased min-h-screen pb-24 selection:bg-[#fef3c7] selection:text-[#162646]">
 
   <!-- REDESIGN PREVIEW TOPBAR -->
-  <aside style="background-color: #161612; color: #deded6; font-size: 0.8rem; padding: 7px 16px; border-bottom: 1px solid #2a2a24;">
-    <div style="max-width: 1150px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
-      <div style="display: flex; align-items: center; gap: 8px;">
-        <span style="display: inline-block; width: 8px; height: 8px; border-radius: 9999px; background-color: #ffd629;"></span>
-        <span><strong>Redesign Preview (v2)</strong> — Split editorial hero &amp; grid issue cards</span>
+  <aside class="bg-[#162646] text-[#deded6] text-xs py-2 px-4 border-b border-[#233a69]">
+    <div class="max-w-6xl mx-auto flex items-center justify-between gap-3 flex-wrap">
+      <div class="flex items-center gap-2">
+        <span class="inline-block w-2 h-2 rounded-full bg-[#d4a03b] animate-pulse"></span>
+        <span><strong>Redesign Preview (v2)</strong> · Refined editorial split-hero &amp; grid card archive</span>
       </div>
       <div>
-        <a href="/" style="color: #ffd629; text-decoration: underline; font-weight: 600;">← View Current Site (v1)</a>
+        <a href="/" class="text-[#ffd629] hover:underline font-semibold text-xs inline-flex items-center gap-1">
+          ← View Current Site (v1)
+        </a>
       </div>
     </div>
   </aside>
 
   <!-- MINIMAL EDITORIAL HEADER (Aligned cleanly to max-w-3xl grid) -->
   <header class="border-b border-slate-200/90 bg-white/95 backdrop-blur sticky top-0 z-40">
-    <div class="max-w-3xl mx-auto px-3 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-2 hdr-wrap">
+    <div class="max-w-6xl mx-auto px-3 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-2 hdr-wrap">
       
       <!-- Brand Logo (TechInHausa centered vertically on emblem center, Tech & Media tucked cleanly underneath) -->
       <a href="#" onclick="closeArticle(); setCategory('all'); return false;" class="inline-flex items-center gap-1.5 sm:gap-2.5 group shrink-0 min-w-0">
@@ -612,53 +660,156 @@ body > header > div,.newsletter-hero,.newsletter-archive,.reader-whatsapp{width:
     </div>
   </header>
 
-  <!-- VIEW 1: MAIN FEED ARCHIVE VIEW -->
+    <!-- VIEW 1: MAIN FEED ARCHIVE VIEW -->
   <div id="feed-view">
     
-    <section class="newsletter-hero" aria-labelledby="newsletter-heading">
-      <div class="hero-copy">
-        <h1 id="newsletter-heading" lang="ha">Koyi AI da fasaha cikin <span>Harshen Hausa</span></h1>
-        <p class="hero-intro">Practical AI guides, digital skills and stories from our tech community. A free weekly newsletter in Hausa and English.</p>
-      <div class="signup-box" id="subscribe">
-        <form onsubmit="handleSubstackSubscribe(event)" class="flex gap-2 p-1.5 bg-white border border-slate-300 rounded-lg shadow-xs focus-within:border-[#233a69] transition-colors">
-          <input 
-            type="email" 
-            id="hero-email" aria-label="Your email address" autocomplete="email"
-            required 
-            placeholder="Enter your email address..." 
-            class="min-w-0 w-full flex-1 bg-transparent px-2.5 sm:px-3 py-2 text-base sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none"
-          />
-          <button 
-            type="submit" 
-            class="bg-[#d4a03b] hover:bg-[#c29030] text-[#162646] font-bold px-3.5 sm:px-5 py-2 rounded-md text-xs sm:text-sm transition-colors whitespace-nowrap shrink-0 shadow-xs">
-            Subscribe free
-          </button>
-        </form>
-        <p id="sub-feedback" class="text-xs text-emerald-600 mt-2 font-medium hidden">✓ Connecting to Substack publication queue...</p>
-      </div>
+    <!-- REFINED SPLIT EDITORIAL HERO -->
+    <section class="max-w-6xl mx-auto px-4 sm:px-6 pt-8 sm:pt-12 pb-10 sm:pb-14">
+      <div class="hero-split-grid">
+        
+        <!-- Left Column: Bilingual Hook, Intro, Subscribe, Stats -->
+        <div>
+          <!-- Eyebrow Pill -->
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#fef8ee] border border-[#d4a03b]/40 text-xs font-semibold text-[#233a69] mb-4 shadow-2xs">
+            <span class="w-1.5 h-1.5 rounded-full bg-[#d4a03b]"></span>
+            <span>Bilingual AI &amp; Tech Publication · Turanci da Hausa</span>
+          </div>
 
+          <!-- Main Headline: Touch of the new Hausa title with brand styling -->
+          <h1 class="serif-headline text-3xl sm:text-5xl font-medium text-[#162646] tracking-tight leading-[1.12] mb-4 break-words">
+            Koyi AI da fasaha cikin <span class="relative inline-block text-[#233a69] font-semibold">Harshen Hausa<span class="absolute bottom-1.5 left-0 w-full h-2.5 bg-[#d4a03b]/30 -z-10 rounded"></span></span>
+          </h1>
 
-        <a class="hero-link" href="#issues">Browse past mails</a>
+          <p class="text-slate-600 text-base sm:text-lg font-normal leading-relaxed mb-6 max-w-xl">
+            Delivering the latest AI updates, practical guides, real ecosystem stories, and digital skills bilingually weekly to your email and WhatsApp — 100% free.
+          </p>
+
+          <!-- Inline Email Form -->
+          <div class="max-w-md mb-6" id="subscribe">
+            <form onsubmit="handleSubstackSubscribe(event)" class="flex gap-2 p-1.5 bg-white border border-slate-300 rounded-lg shadow-xs focus-within:border-[#233a69] transition-colors">
+              <input 
+                type="email" 
+                id="hero-email"
+                required 
+                placeholder="Enter your email address..." 
+                class="min-w-0 w-full flex-1 bg-transparent px-2.5 sm:px-3 py-2 text-base sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none"
+              />
+              <button 
+                type="submit" 
+                class="bg-[#d4a03b] hover:bg-[#c29030] text-[#162646] font-bold px-3.5 sm:px-5 py-2 rounded-md text-xs sm:text-sm transition-colors whitespace-nowrap shrink-0 shadow-xs">
+                Subscribe free
+              </button>
+            </form>
+            <p id="sub-feedback" class="text-xs text-emerald-600 mt-2 font-medium hidden">✓ Connecting to Substack publication queue...</p>
+          </div>
+
+          <!-- The 4 Stats Metrics: Kept cleanly from original design -->
+          <div class="pt-5 border-t border-slate-200/80 grid grid-cols-4 gap-2 text-left sm:text-center max-w-lg">
+            <div>
+              <div class="serif-headline text-xl sm:text-2xl font-medium text-[#233a69]">500K+</div>
+              <div class="text-[10px] uppercase tracking-wider text-slate-500 font-medium mt-0.5">Audience</div>
+            </div>
+            <div>
+              <div class="serif-headline text-xl sm:text-2xl font-medium text-[#233a69]">70K+</div>
+              <div class="text-[10px] uppercase tracking-wider text-slate-500 font-medium mt-0.5">Community</div>
+            </div>
+            <div>
+              <div class="serif-headline text-xl sm:text-2xl font-medium text-[#233a69]">100%</div>
+              <div class="text-[10px] uppercase tracking-wider text-slate-500 font-medium mt-0.5">Free</div>
+            </div>
+            <div>
+              <div class="serif-headline text-xl sm:text-2xl font-medium text-[#233a69]">1K</div>
+              <div class="text-[10px] uppercase tracking-wider text-slate-500 font-medium mt-0.5">Downloads</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Featured Issue Card (Direct touch from new design, polished to TechInHausa branding) -->
+        <div>
+          <article class="featured-card text-white rounded-2xl p-6 sm:p-7 relative overflow-hidden flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between text-xs mb-3 text-slate-300">
+                <span class="font-bold text-[#d4a03b] tracking-wider uppercase text-[11px] flex items-center gap-1.5">
+                  <span class="inline-block w-1.5 h-1.5 rounded-full bg-[#d4a03b]"></span>
+                  Latest Issue
+                </span>
+                <span class="text-slate-400">Nov 19, 2026</span>
+              </div>
+
+              <!-- AI Agents Diagram Step Visual -->
+              <div class="issue-steps-art mb-4" aria-hidden="true">
+                <span class="step-pill">Goal</span>
+                <span class="step-divider"></span>
+                <span class="step-pill">Plan</span>
+                <span class="step-divider"></span>
+                <span class="step-pill">Action</span>
+              </div>
+
+              <h2 class="serif-headline text-2xl sm:text-3xl font-medium text-white mb-2.5 leading-snug cursor-pointer hover:text-[#ffd629] transition-colors break-words" onclick="openArticle('225622911')">
+                What Are AI Agents—explained simply
+              </h2>
+
+              <p class="text-slate-300 text-sm leading-relaxed mb-6 cursor-pointer" onclick="openArticle('225622911')">
+                Misali ace kana sayar da jakunkuna ta WhatsApp... What makes an AI agent fundamentally different from a chatbot, and what can you use one for today?
+              </p>
+            </div>
+
+            <div class="flex items-center justify-between pt-4 border-t border-slate-700/60 text-xs">
+              <span class="text-slate-400">11 min read · By Ibrahim Malamiromba</span>
+              <button 
+                type="button" 
+                onclick="openArticle('225622911')" 
+                class="font-bold text-[#ffd629] hover:underline inline-flex items-center gap-1 text-xs sm:text-sm">
+                Read this issue →
+              </button>
+            </div>
+          </article>
+        </div>
+
       </div>
-      <article class="featured-issue">
-        <p class="eyebrow">Featured issue</p>
-        <div class="issue-art" aria-hidden="true"><span>Goal</span><i></i><span>Plan</span><i></i><span>Action</span></div>
-        <h2>What are AI agents?</h2>
-        <p>What makes an AI agent different from a chatbot, and what can you use one for?</p>
-        <p class="feature-meta">19 Nov 2026 · 11 min read</p>
-        <button type="button" onclick="openArticle('225622911')">Read the new email</button>
-      </article>
     </section>
-    <aside class="reader-whatsapp"><div><h2>Read on WhatsApp</h2><p>Get practical guides, prompt templates and AI news in the TechInHausa channel.</p></div><a href="https://whatsapp.com/channel/0029VbCMK3rF6smqiLSC493j">Join the channel</a></aside>
+
+    <!-- WHATSAPP COMMUNITY CALLOUT (Touch from the new design) -->
+    <aside class="max-w-6xl mx-auto px-4 sm:px-6 mb-12">
+      <div class="bg-gradient-to-r from-[#fef8ee] via-white to-[#ecfdf5] border border-[#d4a03b]/35 rounded-2xl p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-2xs">
+        <div class="flex items-start sm:items-center gap-3.5">
+          <div class="w-10 h-10 rounded-xl bg-[#25D366] text-white flex items-center justify-center shrink-0 shadow-xs">
+            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+              <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.771-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.007c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.099.824zm-3.423-14.416c-6.627 0-12 5.373-12 12 0 2.159.57 4.184 1.564 5.938l-1.564 5.717 5.86-1.537c1.701.928 3.654 1.464 5.727 1.464 6.627 0 12-5.373 12-12 0-6.627-5.373-12-12-12z"/>
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-bold text-[#162646] text-base sm:text-lg leading-tight">Read and Learn on WhatsApp</h3>
+            <p class="text-slate-600 text-xs sm:text-sm mt-0.5">Get prompt templates, practical guides, and bilingual AI news delivered directly to your WhatsApp.</p>
+          </div>
+        </div>
+        <a 
+          href="https://whatsapp.com/channel/0029VbCMK3rF6smqiLSC493j" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          class="inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1fa851] text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-lg transition-colors shadow-xs whitespace-nowrap shrink-0">
+          <span>Join WhatsApp Channel</span>
+          <span>→</span>
+        </a>
+      </div>
+    </aside>
 
     <!-- Editorial Feed Container -->
-    <main id="issues" class="newsletter-archive"><h2 class="archive-heading">Browse past mails</h2>
+    <main id="issues" class="max-w-6xl mx-auto px-4 sm:px-6 pt-2 pb-10">
+
+      <!-- Section Title & Subtitle -->
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2 mb-6">
+        <div>
+          <h2 class="serif-headline text-2xl sm:text-3xl font-medium text-[#162646]">Browse Past Issues</h2>
+          <p class="text-slate-500 text-xs sm:text-sm mt-0.5">Explore our complete bilingual archive of guides, AI news, and stories.</p>
+        </div>
+      </div>
 
       <!-- Category Filter Bar (5 Categories + All Emails, aligned cleanly flush left) -->
-      <div class="border-b border-slate-200 mb-7">
-        <div class="flex items-center gap-4 sm:gap-5 overflow-x-auto hide-scrollbar -mb-px text-xs sm:text-sm">
+      <div class="border-b border-slate-200 mb-8">
+        <div class="flex items-center gap-4 sm:gap-6 overflow-x-auto hide-scrollbar -mb-px text-xs sm:text-sm">
           <button onclick="setCategory('all')" data-cat="all" class="cat-pill shrink-0 py-2.5 px-0.5 font-semibold text-[#233a69] border-b-2 border-[#233a69] transition-colors whitespace-nowrap">
-            All issues
+            All Issues
           </button>
           <button onclick="setCategory('non-technical')" data-cat="non-technical" class="cat-pill shrink-0 py-2.5 px-0.5 font-medium text-slate-500 hover:text-[#233a69] border-b-2 border-transparent transition-colors whitespace-nowrap">
             Non-technical
@@ -678,9 +829,7 @@ body > header > div,.newsletter-hero,.newsletter-archive,.reader-whatsapp{width:
         </div>
       </div>
 
-
-
-      <!-- Feed Stream Container (Dynamic Posts with Complete Read Handlers) -->
+      <!-- Feed Stream Container (Dynamic Posts with Grid Cards) -->
       <div id="post-feed"></div>
 
       <!-- Pagination / Load More Older Posts -->
@@ -1200,7 +1349,7 @@ body > header > div,.newsletter-hero,.newsletter-archive,.reader-whatsapp{width:
       return `${Math.max(1, Math.round(words / 200))} min read`;
     }
 
-    // RENDER FEED FUNCTION (Supports pagination + Load More for older issues)
+        // RENDER FEED FUNCTION (Supports pagination + Load More for older issues)
     function renderFeed(filterCat = 'all') {
       currentCategory = filterCat;
       const container = document.getElementById('post-feed');
@@ -1211,38 +1360,37 @@ body > header > div,.newsletter-hero,.newsletter-archive,.reader-whatsapp{width:
 
       visibleItems.forEach(art => {
         const articleEl = document.createElement('article');
-        articleEl.className = 'feed-item group transition-opacity';
+        articleEl.className = 'archive-card group';
         articleEl.setAttribute('data-category', art.category);
         
         articleEl.innerHTML = `
-          <div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-slate-500 mb-2">
-            <button 
-              type="button"
-              onclick="event.stopPropagation(); setCategory('${art.category}')" 
-              class="font-semibold text-[#d4a03b] hover:underline uppercase tracking-wider text-[11px]">
-              ${categoryLabels[art.category] || art.category}
-            </button>
-            <span>•</span>
-            <time>${art.date}</time>
-            <span>•</span>
-            <span>${art.readTime}</span>
+          <div>
+            <div class="flex items-center justify-between text-xs text-slate-500 mb-3">
+              <button 
+                type="button"
+                onclick="event.stopPropagation(); setCategory('${art.category}')" 
+                class="font-bold text-[#b58325] hover:underline uppercase tracking-wider text-[10.5px] bg-[#fef8ee] px-2.5 py-0.5 rounded border border-[#d4a03b]/30">
+                ${categoryLabels[art.category] || art.category}
+              </button>
+              <span class="text-slate-400 text-[11px]">${art.readTime}</span>
+            </div>
+
+            <h2 class="serif-headline text-xl sm:text-2xl font-medium text-[#162646] group-hover:text-[#233a69] transition-colors mb-2.5 leading-snug cursor-pointer break-words">
+              <a href="javascript:void(0)" onclick="openArticle('${art.id}')">${art.title}</a>
+            </h2>
+
+            <p class="text-slate-600 text-sm leading-relaxed mb-6 cursor-pointer break-words" onclick="openArticle('${art.id}')">
+              ${art.excerpt}
+            </p>
           </div>
 
-          <h2 class="serif-headline text-xl sm:text-3xl font-medium text-[#162646] group-hover:text-[#233a69] transition-colors mb-2 leading-snug cursor-pointer break-words">
-            <a href="javascript:void(0)" onclick="openArticle('${art.id}')">${art.title}</a>
-          </h2>
-
-          <p class="text-slate-600 text-sm sm:text-base leading-relaxed mb-4 cursor-pointer break-words" onclick="openArticle('${art.id}')">
-            ${art.excerpt}
-          </p>
-
-          <div class="flex items-center justify-between gap-3 text-xs text-slate-500">
-            <span class="min-w-0 truncate">By <strong>${art.author}</strong> · TechInHausa</span>
+          <div class="pt-4 border-t border-slate-100 flex items-center justify-between gap-3 text-xs text-slate-500 mt-auto">
+            <time class="text-slate-400 font-medium">${art.date}</time>
             <button 
               type="button"
               onclick="openArticle('${art.id}')" 
-              class="shrink-0 font-semibold text-[#233a69] hover:text-[#d4a03b] hover:underline transition-colors">
-              Read
+              class="font-bold text-[#233a69] hover:text-[#d4a03b] hover:underline transition-colors inline-flex items-center gap-1">
+              Read issue →
             </button>
           </div>
         `;
@@ -1385,8 +1533,6 @@ body > header > div,.newsletter-hero,.newsletter-archive,.reader-whatsapp{width:
           btn.className = 'cat-pill shrink-0 py-2.5 px-0.5 font-medium text-slate-500 hover:text-[#233a69] border-b-2 border-transparent transition-colors whitespace-nowrap';
         }
       });
-
-
 
       renderFeed(category);
     }
