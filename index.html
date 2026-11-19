@@ -411,6 +411,12 @@
     .border-\[\#d4a03b\]\/30 { border-color: rgb(212 160 59 / 0.3); }
     .border-\[\#d4a03b\]\/40 { border-color: rgb(212 160 59 / 0.4); }
 
+    .feed-item:last-child {
+      border-bottom-width: 0 !important;
+      border-bottom: none !important;
+      padding-bottom: 0 !important;
+    }
+
     /* Borders Radius, Shadows, Effects, Media & Interaction */
     .rounded { border-radius: 0.25rem; }
     .rounded-md { border-radius: 0.375rem; }
@@ -643,16 +649,6 @@
         </div>
       </div>
 
-      <!-- Active Filter Banner -->
-      <div id="filter-banner" class="hidden flex-wrap gap-2 mb-6 py-2 px-3 bg-[#fef8ee] border border-[#d4a03b]/30 rounded-md items-center justify-between text-xs">
-        <span class="text-[#233a69]">
-          Category: <strong id="filter-name" class="text-[#162646] font-semibold"></strong>
-        </span>
-        <button onclick="setCategory('all')" class="text-[#d4a03b] font-medium hover:underline">
-          Show all posts ✕
-        </button>
-      </div>
-
       <!-- Feed Stream Container (Dynamic Posts with Complete Read Handlers) -->
       <div class="space-y-10" id="post-feed"></div>
 
@@ -743,7 +739,7 @@
     <!-- Bottom Subscription Card in Reader View -->
     <div class="bg-[#fef8ee] border border-[#d4a03b]/30 rounded-2xl p-5 sm:p-8 text-center max-w-xl mx-auto mb-8">
       <h3 class="serif-headline text-2xl font-normal text-[#162646] mb-2">
-        Never miss an issue
+        Never miss an update
       </h3>
       <p class="text-slate-600 text-xs sm:text-sm leading-relaxed mb-6">
         Get weekly bilingual AI updates, practical guides, and digital skills delivered directly to your inbox — 100% free.
@@ -1182,9 +1178,10 @@
       const matching = articles.filter(art => filterCat === 'all' || art.category === filterCat);
       const visibleItems = matching.slice(0, visibleLimit);
 
-      visibleItems.forEach(art => {
+      visibleItems.forEach((art, index) => {
+        const isLast = index === visibleItems.length - 1;
         const articleEl = document.createElement('article');
-        articleEl.className = 'feed-item group border-b border-slate-100 pb-10 transition-opacity';
+        articleEl.className = `feed-item group ${isLast ? 'pb-2' : 'border-b border-slate-100 pb-10'} transition-opacity`;
         articleEl.setAttribute('data-category', art.category);
         
         articleEl.innerHTML = `
@@ -1358,17 +1355,6 @@
           btn.className = 'cat-pill shrink-0 py-2.5 px-0.5 font-medium text-slate-500 hover:text-[#233a69] border-b-2 border-transparent transition-colors whitespace-nowrap';
         }
       });
-
-      const banner = document.getElementById('filter-banner');
-      const filterName = document.getElementById('filter-name');
-      if (category === 'all') {
-        banner.classList.add('hidden');
-        banner.classList.remove('flex');
-      } else {
-        banner.classList.remove('hidden');
-        banner.classList.add('flex');
-        filterName.textContent = categoryLabels[category] || category;
-      }
 
       renderFeed(category);
     }
