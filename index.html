@@ -1134,13 +1134,14 @@
     ];
 
     // Pagination & Archive State
-    const INITIAL_LIMIT = 4;
-    const LOAD_STEP = 6;
-    const ARCHIVE_BATCH = 10;
+    const INITIAL_LIMIT = 25;
+    const LOAD_STEP = 10;
+    const ARCHIVE_BATCH = 25;
 
     let currentCategory = 'all';
     let visibleLimit = INITIAL_LIMIT;
     let archiveOffset = 0;
+    let nextArchiveCursor = null;
     let hasMoreOnServer = false;
     let isFetchingMore = false;
     let liveArchiveActive = false;
@@ -1250,19 +1251,11 @@
       const matchingNow = articles.filter(a => currentCategory === 'all' || a.category === currentCategory);
 
       // Fetch next older batch from /api/archive if we're nearing the end of buffered posts
-      if (liveArchiveActive && hasMoreOnServer && matchingNow.length <= visibleLimit) {
+      if (liveArchiveActive && hasMoreOnServer && nextArchiveCursor && matchingNow.length <= visibleLimit) {
         isFetchingMore = true;
         renderFeed(currentCategory);
 
-        let pagesFetched = 0;
-        while (hasMoreOnServer && pagesFetched < 3) {
-          pagesFetched++;
-          const fetched = await fetchArchiveBatch(archiveOffset, ARCHIVE_BATCH);
-          if (!fetched || fetched.length === 0) break;
-
-          const updatedMatches = articles.filter(a => currentCategory === 'all' || a.category === currentCategory);
-          if (updatedMatches.length > beforeVisible) break;
-        }
+        await fetchArchiveBatch(nextArchiveCursor);
 
         isFetchingMore = false;
       }
@@ -1367,11 +1360,12 @@
     }
 
     // Fetch a paginated batch from Vercel /api/archive (full Substack back-dated archive)
-    async function fetchArchiveBatch(offset = 0, limit = ARCHIVE_BATCH) {
+    async function fetchArchiveBatch(cursor = null) {
       try {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 15000);
-        const res = await fetch(`/api/archive?offset=${offset}&limit=${limit}`, { signal: controller.signal });
+        const query = cursor ? `?limit=${ARCHIVE_BATCH}&cursor=${encodeURIComponent(cursor)}` : `?limit=${ARCHIVE_BATCH}`;
+        const res = await fetch(`/api/archive${query}`, { signal: controller.signal });
         clearTimeout(timeoutId);
 
         if (!res.ok) return null;
@@ -1384,7 +1378,7 @@
           const cat = classifyPost(post.title, cleanExcerpt, post.tags || []);
 
           return {
-            id: post.id || (1000 + offset + idx),
+            id: post.id || (1000 + idx),
             slug: post.slug,
             url: post.canonical_url,
             title: post.title,
@@ -1392,21 +1386,21 @@
             date: formatDisplayDate(post.post_date),
             readTime: estimateReadTime(post.wordcount, cleanExcerpt),
             author: post.author || 'Ibrahim Malamiromba',
-            isLatest: offset === 0 && idx === 0,
+            isLatest: !cursor && idx === 0,
             source: 'live',
             excerpt: excerpt,
             content: null
           };
         });
 
-        if (offset === 0 && mapped.length > 0) {
+        if (!cursor && mapped.length > 0) {
           articles = mapped;
         } else if (mapped.length > 0) {
           const existingIds = new Set(articles.map(a => a.id));
           articles = [...articles, ...mapped.filter(m => !existingIds.has(m.id))];
         }
 
-        archiveOffset = data.nextOffset || (offset + mapped.length);
+        nextArchiveCursor = data.nextCursor || null;
         hasMoreOnServer = Boolean(data.hasMore);
         return mapped;
       } catch (err) {
@@ -1418,7 +1412,7 @@
     // 1) Tries Vercel /api/archive (supports unlimited back-dated posts via Load More).
     // 2) Falls back to Substack RSS via rss2json (for local file:// previews).
     async function initSubstackFeed() {
-      const archiveBatch = await fetchArchiveBatch(0, ARCHIVE_BATCH);
+      const archiveBatch = await fetchArchiveBatch(null);
       if (archiveBatch && archiveBatch.length > 0) {
         liveArchiveActive = true;
         renderFeed(currentCategory);
@@ -1492,7 +1486,10 @@
 
       if (email) {
         const subUrl = `https://malamiromba.substack.com/subscribe?email=${encodeURIComponent(email)}`;
-        window.open(subUrl, '_blank', 'noopener,noreferrer');
+        const win = window.open(subUrl, '_blank', 'noopener,noreferrer');
+        if (!win || win.closed || typeof win.closed === 'undefined') {
+          window.location.href = subUrl;
+        }
       }
     }
 

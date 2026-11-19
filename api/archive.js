@@ -1,8 +1,9 @@
 const { fetchSubstackJson, SUBSTACK_HOST } = require('./_substack');
 
 /**
- * Vercel Serverless Route: GET /api/archive?offset=0&limit=8
- * Fetches paginated Substack posts (newest through all historical back-dated issues).
+ * Vercel Serverless Route: GET /api/archive?limit=25&cursor=<cursor>&offset=0
+ * Fetches Substack archive posts (newest through all historical back-dated issues).
+ * Substack API maximum limit is 25 posts per request and paginates via cursor.
  */
 module.exports = async (req, res) => {
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
@@ -10,11 +11,16 @@ module.exports = async (req, res) => {
 
   try {
     const reqUrl = new URL(req.url, 'http://localhost');
+    const cursor = (reqUrl.searchParams.get('cursor') || '').trim();
     const offset = Math.max(0, parseInt(reqUrl.searchParams.get('offset') || '0', 10) || 0);
-    const limit = Math.min(24, Math.max(1, parseInt(reqUrl.searchParams.get('limit') || '8', 10) || 8));
-    const fetchLimit = Math.min(50, Math.max(12, offset + limit));
+    const limit = Math.min(25, Math.max(1, parseInt(reqUrl.searchParams.get('limit') || '25', 10) || 25));
 
-    const rawData = await fetchSubstackJson(`/api/v1/archive?sort=new&limit=${fetchLimit}`);
+    let substackPath = `/api/v1/archive?sort=new&limit=${limit}`;
+    if (cursor) {
+      substackPath += `&cursor=${encodeURIComponent(cursor)}`;
+    }
+
+    const rawData = await fetchSubstackJson(substackPath);
     const rawList = Array.isArray(rawData)
       ? rawData
       : (rawData && Array.isArray(rawData.posts) ? rawData.posts : null);
@@ -24,7 +30,8 @@ module.exports = async (req, res) => {
       return res.end(JSON.stringify({ error: 'Unexpected response format from Substack archive' }));
     }
 
-    const sliced = rawList.slice(offset, offset + limit);
+    // If offset is requested without cursor, slice locally; if cursor is used, take rawList directly
+    const sliced = cursor ? rawList.slice(0, limit) : (offset > 0 ? rawList.slice(offset, offset + limit) : rawList);
 
     const posts = sliced.map((item) => {
       const byline = Array.isArray(item.publishedBylines) && item.publishedBylines[0];
@@ -51,10 +58,14 @@ module.exports = async (req, res) => {
       };
     });
 
+    const nextCursor = (rawData && rawData.nextCursor) || null;
+    const hasMore = Boolean(nextCursor || (!cursor && rawList.length > offset + sliced.length));
+
     res.statusCode = 200;
     return res.end(JSON.stringify({
       posts,
-      hasMore: Boolean((rawData && rawData.nextCursor) || rawList.length > offset + sliced.length),
+      nextCursor,
+      hasMore,
       nextOffset: offset + sliced.length
     }));
   } catch (err) {
